@@ -64,7 +64,7 @@ model_function = function(t, pop, param, commu_FOI, NCD_rate) {
     # Recovered
     # + recoveries - chronic disease incidence
     dR = Ia*gamma_a + Is*gamma_s - omega*R
-    
+    dRs = Is*gamma_s - omega*Rs
     
     
     # Individuals without work-related chronic disease ####
@@ -91,8 +91,9 @@ model_function = function(t, pop, param, commu_FOI, NCD_rate) {
     # Recovered
     # + recoveries + chronic disease incidence
     dR_c = Ia_c*gamma_a + Is_c*gamma_s + omega*R
+    dRs_c = Is_c*gamma_s + omega*Rs
     
-    list(c(dS, dE, dIa, dP, dIs, dR, dS_c, dE_c, dIa_c, dP_c, dIs_c, dR_c))
+    list(c(dS, dE, dIa, dP, dIs, dR, dRs, dS_c, dE_c, dIa_c, dP_c, dIs_c, dR_c, dRs_c))
     
   })
   

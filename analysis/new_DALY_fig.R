@@ -32,7 +32,7 @@ I0 = 0      # initial workplace infected
 S0 = N-I0   # initial workplace susceptibles
 
 Time = seq(from=0,to=Tmax,by=dt)
-Init.cond = c(S=S0,E=0,Ia=I0,P=0,Is=0,R=0,S_c=0,E_c=0,Ia_c=0,P_c=0,Is_c=0,R_c=0) 
+Init.cond = c(S=S0,E=0,Ia=I0,P=0,Is=0,R=0,Rs=0,S_c=0,E_c=0,Ia_c=0,P_c=0,Is_c=0,R_c=0,Rs_c=0) 
 param = c(R0=R0, alpha=alpha,
           nu=nu, epsilon=epsilon, sigma=sigma, rho=rho, prop_a=prop_a,
           gamma_a=gamma_a, gamma_s=gamma_s, baseline_NCD=baseline_NCD)
@@ -121,11 +121,11 @@ for(alpha in seq(0, 1, 0.2)){
 }
 
 DALY_ID = 0.04327715*16
-DALY_NCD = 0.11447948*365*2
+DALY_NCD = 0.11447948*12*7
 
 result_all2 = result_all %>%
   mutate(Tot_c = S_c + E_c + Ia_c + P_c + Is_c + R_c,
-         Tot_r = R + R_c) %>%
+         Tot_r = Rs + Rs_c) %>%
   mutate(Tot_c_DALY = Tot_c*DALY_NCD,
          Tot_r_DALY = Tot_r*DALY_ID) %>%
   # group_by(DRF) %>%
@@ -143,14 +143,17 @@ result_all2 = result_all %>%
 result_all2 %>%
   filter(t_alpha == 0) %>%
   melt(id.vars = c("DRF", "alpha"), measure.vars = c("Tot_c_DALY", "Tot_r_DALY")) %>%
-  mutate(variable = recode(variable, "Tot_c_DALY" = "NCD", "Tot_r_DALY" = "ID")) %>%
+  mutate(variable = recode(variable, "Tot_r_DALY" = "Infectious disease", "Tot_c_DALY" = "Non-communicable disease")) %>%
+  mutate(variable = factor(variable, levels = c("Infectious disease", "Non-communicable disease"))) %>%
   ggplot() +
   facet_wrap(~DRF) +
   geom_bar(aes(x = alpha, y = value, fill = variable), stat = "identity", position = "stack") +
   theme_bw() +
-  labs(x = "Proportion of teleworking", y = "Total DALY (stacked)", fill = "Type of DALY") +
+  scale_fill_discrete(type = c("darkorange3","royalblue3")) +
+  labs(x = "Proportion of teleworking", y = "Total DALYs (stacked)", fill = "") +
   theme(axis.text = element_text(size = 12), axis.title = element_text(size = 14),
         legend.text = element_text(size = 12), legend.title = element_text(size = 14),
-        strip.text = element_text(size = 12))
+        strip.text = element_text(size = 12),
+        legend.position = "bottom")
 
 ggsave(here::here("figures","DALY_plot.png"), height = 5, width = 9)
