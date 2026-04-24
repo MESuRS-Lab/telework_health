@@ -149,4 +149,4 @@ result_all2 %>%
         strip.text = element_text(size = 12),
         legend.position = "bottom")
 
-ggsave(here::here("figures","DALY_plot.png"), height = 5, width = 9, bg = "white")
+ggsave(here::here("figures","fig5.png"), height = 5, width = 9, bg = "white")
