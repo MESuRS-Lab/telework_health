@@ -120,26 +120,19 @@ for(alpha in seq(0, 1, 0.2)){
   
 }
 
-DALY_ID = 0.04327715*16
-DALY_NCD = 0.11447948*12*7
+DALY_ID = 0.114497994862546*0.075927222383856+0.001976*43.05
+DALY_NCD = 0.114054965472449*2.38687051209307
 
 result_all2 = result_all %>%
   mutate(Tot_c = S_c + E_c + Ia_c + P_c + Is_c + R_c,
          Tot_r = Rs + Rs_c) %>%
   mutate(Tot_c_DALY = Tot_c*DALY_NCD,
          Tot_r_DALY = Tot_r*DALY_ID) %>%
-  # group_by(DRF) %>%
-  # mutate(Tot_c = Tot_c/first(Tot_c)*100,
-  #        Tot_r = Tot_r/first(Tot_r)*100) %>%
-  # ungroup %>%
   select(DRF, alpha, t_alpha, Tot_c, Tot_r, Tot_c_DALY, Tot_r_DALY) %>% 
   mutate(Tot_tot = Tot_c+Tot_r,
          Tot_tot_DALY = Tot_c_DALY+Tot_r_DALY)
-  # mutate(DRF = factor(DRF, levels = c("L-shaped",
-  #                                     "U-shaped", "Inverted U-shaped")))
 
 # stacked barplot of the change in NCD and ID DALY with increase telework frequency, for each DRF
-
 result_all2 %>%
   filter(t_alpha == 0) %>%
   melt(id.vars = c("DRF", "alpha"), measure.vars = c("Tot_c_DALY", "Tot_r_DALY")) %>%
@@ -156,4 +149,4 @@ result_all2 %>%
         strip.text = element_text(size = 12),
         legend.position = "bottom")
 
-ggsave(here::here("figures","DALY_plot.png"), height = 5, width = 9)
+ggsave(here::here("figures","DALY_plot.png"), height = 5, width = 9, bg = "white")
